@@ -87,11 +87,11 @@ public class RegistrationController {
         UserEntity userEntity = userService.findUserByEmail(email);
         postToMQ("FORGOT PASSWORD",email + " made request to reset his password");
 
-        if (userEntity == null)
+        if (userEntity == null || userEntity.isEnabled()==false)
         {
             //return new ResponseEntity<>(new NoSuchFieldException().toString(), HttpStatus.NOT_FOUND);
-                postToMQ("FORGOT PASSWORD",email + " does not exist");
-                throw new NoRecordFoundException("User with given email id not found: " + email);
+                postToMQ("FORGOT PASSWORD",email + " does not exist or not verified");
+                throw new NoRecordFoundException("User with given email id not found or not verified: " + email);
 
         }
         PasswordResetTokenEntity passwordResetTokenEntity =this.userService.savePasswordResetToken(userEntity);
